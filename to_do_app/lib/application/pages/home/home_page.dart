@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
   final int index;
 
+  //list of tabs that should be displayed inside navigation bar
   static const tabs = [
     DashboardPage.pageConfig,
     OverviewPage.pageConfig,
@@ -23,9 +24,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final destinations = HomePage.tabs.map((page) => NavigationDestination(icon: Icon(page.icon), label: page.name)).toList();
+  final destinations = HomePage.tabs.map((page) => NavigationDestination(
+      icon: Icon(page.icon),
+      label: page.name
+    )
+  ).toList();
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
         child: AdaptiveLayout(
@@ -33,6 +40,10 @@ class _HomePageState extends State<HomePage> {
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.mediumAndUp:SlotLayout.from(key: const Key('primary-navigation-medium'),
               builder: (context) => AdaptiveScaffold.standardNavigationRail(
+                  selectedLabelTextStyle: TextStyle(color: theme.colorScheme.onBackground),
+                  selectedIconTheme: IconThemeData(color: theme.colorScheme.onBackground),
+                  unselectedIconTheme: IconThemeData(color: theme.colorScheme.onBackground.withOpacity(0.5)),
+                  selectedIndex: widget.index,
                   onDestinationSelected: (index) => _tapOnNavigatioonDestination(context, index),
                   destinations: destinations
                       .map((element) => AdaptiveScaffold.toRailDestination(element),
@@ -44,6 +55,7 @@ class _HomePageState extends State<HomePage> {
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.small:SlotLayout.from(key: const Key('bottom-navigation-small'),
                   builder: (context) => AdaptiveScaffold.standardBottomNavigationBar(
+                    currentIndex: widget.index,
                       destinations: destinations,
                       onDestinationSelected: (index) => _tapOnNavigatioonDestination(context, index))),
             },
@@ -51,13 +63,13 @@ class _HomePageState extends State<HomePage> {
           body: SlotLayout(
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.smallAndUp:SlotLayout.from(key: const Key('primary-body'),
-                  builder: (context) =>  const Placeholder())
+                  builder: (context) =>  HomePage.tabs[widget.index].child)
             },
           ),
           secondaryBody: SlotLayout(
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.mediumAndUp:SlotLayout.from(key: const Key('secondary-body'),
-                  builder: (context) =>  const Placeholder())
+                  builder: AdaptiveScaffold.emptyBuilder)
             },
           ),
         ),

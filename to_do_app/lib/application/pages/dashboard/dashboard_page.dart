@@ -10,7 +10,6 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: Colors.purpleAccent,
-        child: const Text("Dashboard Page")
     );
   }
 }

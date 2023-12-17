@@ -9,7 +9,6 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.tealAccent,
-      child: const Text("Overview Page")
     );
   }
 }
