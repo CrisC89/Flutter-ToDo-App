@@ -8,7 +8,10 @@ class DashboardPage extends StatelessWidget {
   static const pageConfig = PageConfig(icon: Icons.dashboard_rounded, name: 'dashboard', child: DashboardPage());
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+        color: Colors.purpleAccent,
+        child: const Text("Dashboard Page")
+    );
   }
 }
 

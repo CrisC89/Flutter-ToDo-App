@@ -7,14 +7,25 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root'
 );
 
+final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'shell'
+);
+
 final routes = GoRouter(
   navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: '/home/dashboard',
     observers: [GoRouterObserver()],
     routes: [
-      GoRoute(path: '/home', builder: (context, state) {
-        return HomePage();
-      }),
+      ShellRoute(
+          navigatorKey: _shellNavigatorKey,
+          builder: (context, state, child) => child,
+          routes: [
+            GoRoute(path: '/home/:tab', builder: (context, state) => HomePage(
+              key: state.pageKey,
+              tab: state.pathParameters['tab'] ?? 'dashboard'
+            )
+            )
+          ]),
       GoRoute(path: '/home/settings', builder: (context, state) {
         return Container(
             color: Colors.amber,
@@ -34,22 +45,6 @@ final routes = GoRouter(
               ],
             ));
       }),
-      GoRoute(path: '/home/task', builder: (context, state) {
-        return Container(
-            color: Colors.grey,
-            child: Column(
-              children: [
-                ElevatedButton(
-                  child: const Text('Go to start'),
-                  onPressed: () => context.push('/home/start'),
-                ),
-                ElevatedButton(
-                  child: const Text('Go to settings'),
-                  onPressed: () => context.push('/home/settings'),
-                )
-              ],
-            ));
-      })
 
     ]
 );
