@@ -5,6 +5,10 @@ import 'package:to_do_app/application/pages/dashboard/dashboard_page.dart';
 import 'package:to_do_app/application/pages/home/home_page.dart';
 import 'package:to_do_app/application/pages/settings/settings_page.dart';
 
+import '../../domain/entities/unique_id.dart';
+import '../pages/overview/overview_page.dart';
+import '../pages/todo-detail/todo_detal_page.dart';
+
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root'
 );
@@ -40,6 +44,32 @@ final routes = GoRouter(
           builder: (context, state) {
         return SettingsPage();
       }),
-
+      GoRoute(
+          name: ToDoDetailPage.pageConfig.name,
+          path: '$_basePath/overview/:collectionId',
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('details'),
+                leading: BackButton(
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.goNamed(
+                        HomePage.pageConfig.name,
+                        pathParameters: {'tab': OverviewPage.pageConfig.name},
+                      );
+                    }
+                  },
+                ),
+              ),
+              body: ToDoDetailPageProvider(
+                collectionId: CollectionId.fromUniqueString(
+                  state.pathParameters['collectionId'] ?? '',
+                ),
+              ),
+            );
+          })
     ]
 );

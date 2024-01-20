@@ -8,6 +8,7 @@ class BasicApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'To Do App',
       localizationsDelegates: const [
         ...GlobalMaterialLocalizations.delegates,
