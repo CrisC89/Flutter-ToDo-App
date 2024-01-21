@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:to_do_app/application/core/page_config.dart';
+import 'package:to_do_app/application/pages/home/bloc/navigation_todo_cubit.dart';
 import 'package:to_do_app/application/pages/settings/settings_page.dart';
+import 'package:to_do_app/application/pages/todo-detail/todo_detal_page.dart';
+import 'package:to_do_app/domain/entities/unique_id.dart';
 
 import '../dashboard/dashboard_page.dart';
 import '../overview/overview_page.dart';
+
+class HomePageProvider extends StatelessWidget{
+  const HomePageProvider({super.key,required this.tab});
+
+  final String tab;
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<NavigationToDoCubit>(create:
+    (context) => NavigationToDoCubit(),
+    child: HomePage(tab: tab,),);
+  }
+
+}
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -77,7 +94,24 @@ class _HomePageState extends State<HomePage> {
           secondaryBody: SlotLayout(
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.mediumAndUp:SlotLayout.from(key: const Key('secondary-body'),
-                  builder: AdaptiveScaffold.emptyBuilder)
+                  builder: widget.index != 1 ? null : (_) => BlocBuilder<NavigationToDoCubit, NavigationToDoState>(
+                      builder: (context, state) {
+                        final selectedId = state.selectedCollectionId;
+                        final isSecondBodyDisplayed = Breakpoints.mediumAndUp.isActive(context);
+
+                        context.read<NavigationToDoCubit>().secondBodyHasChanged(
+                          isSecondBodyDisplayed: isSecondBodyDisplayed,
+                        );
+                        if (selectedId == null) {
+                          return const Placeholder();
+                        }
+                        return ToDoDetailPageProvider(
+                          key: Key(selectedId.value),
+                          collectionId: selectedId,
+                        );
+  },
+)
+              )
             },
           ),
         ),
